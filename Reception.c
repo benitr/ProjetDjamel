@@ -29,7 +29,7 @@ int main (int argc, char *argv[]) {
     struct sockaddr_in CliAddr, ServAddr ;
     // Varibales concernant le fichier son
     FILE *sortie;
-    int wr, k = 0;
+    int wr, k = 0, compt;
     char *buff, *buffer;
     int taille_fic[1];
 
@@ -113,13 +113,16 @@ int main (int argc, char *argv[]) {
             free(buff);
             break;
         } else {
+            compt = compt - 42;
             // Remplissage du buffer de stockage
-    		for(i=0 ; i < rcvf; i++ & k++){
+    		for(i=0 ; i < rcvf - 42; i++ & k++){
     			buffer[k] = buff[i];
     		}
         }
 
     }
+
+    printf("Nous avons reçu %i octets de données\n",compt );
 
     // Ecriture dans le fichier de destination
     wr = fwrite(buffer, 1, taille_fic[0], sortie);

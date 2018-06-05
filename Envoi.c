@@ -22,7 +22,7 @@ int main (int argc, char **argv) {
 
     // sd = socket descriptor
     // rc = valeur de retour
-    int sd, rc, i,j;
+    int sd, rc, i, j, compt, compt2;
     struct sockaddr_in CliAddr, ServAddr ;
     struct hostent * h;
     // Varibales concernant le fichier son
@@ -35,8 +35,8 @@ int main (int argc, char **argv) {
        perror("Erreur dans le gethostbyname de l'argument 1");
        exit(2);
    }
-   printf("%s\n", h -> h_name );
-   printf("%s\n", inet_ntoa(*(struct in_addr *)h -> h_addr_list[0]) );
+   printf("Nom de machine entré : %s\n", h -> h_name );
+	 printf("Adresse IP de la machine %s\n\n", inet_ntoa(*(struct in_addr *)h -> h_addr_list[0]) );
 
     ServAddr.sin_family = h -> h_addrtype;
     // faire un test sur memcpy
@@ -71,7 +71,7 @@ int main (int argc, char **argv) {
 
     // Indication de la taille du fichier que l'on va envoyer
     taille_fic[0] = traiter_son();
-	printf("Taille fichier pour envvidéo avioi : %d octets\n",taille_fic[0]);
+	printf("Taille fichier pour envoi de la vidéo : %d octets\n",taille_fic[0]);
     rc = sendto(sd, taille_fic, sizeof(taille_fic), 0, (struct sockaddr *)&ServAddr, sizeof(ServAddr));
     if ( rc < 0 ) {
         perror("Erreur dans le sendto");
@@ -92,14 +92,20 @@ int main (int argc, char **argv) {
           exit(5);
       }
 
+			compt = compt + rd;
+
       //   Envois du buffer
       rc = sendto(sd, buff, rd, 0, (struct sockaddr *)&ServAddr, sizeof(ServAddr));
       if ( rc < 0 ) {
           perror("Erreur dans le sendto");
           exit(6);
       }
-	  //for (j=0; j<120000;j++){ ; }
+					compt2 = compt2 + rc;
+	  			for (j=0; j<120000;j++){ ; }
     } while ( rd > 0 );
+
+					printf("Nombre de octets lu dans le fichier : %i\n", compt);
++					printf("Nombre de octets envoyés : %i\n", compt2);
 
     // Fermeture des fichiers
     close(entree);
